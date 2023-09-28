@@ -1,59 +1,60 @@
 package com.demo.quizApp.service;
 
-import com.demo.quizApp.dao.QuestionDao;
+import com.demo.quizApp.dao.QuestionRepository;
 import com.demo.quizApp.model.Question;
-import com.demo.quizApp.model.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class QuestionService {
-    @Autowired
-    QuestionDao questionDao;
 
+    @Autowired
+    private QuestionRepository questionRepository;
+
+    
     public ResponseEntity<List<Question>> getAllQuestions() {
         try {
-            return new ResponseEntity<>(questionDao.findAll(), HttpStatus.OK);
+            List<Question> questions = questionRepository.findAll();
+            return new ResponseEntity<>(questions, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+     public List<Question> findByQuizId(Long quizId) {
+        try {
+            List<Question> questions = questionRepository.findByQuizId(quizId);
+            return questions;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public ResponseEntity<List<Question>> getQuestionsByCategory(String category) {
+        try {
+            List<Question> questions = questionRepository.findByCategory(category);
+            return new ResponseEntity<>(questions, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     public ResponseEntity<String> addQuestion(Question question) {
-        questionDao.save(question);
-        return new ResponseEntity<>("success", HttpStatus.CREATED);
-    }
-    public ResponseEntity<Integer> calculateResult(Integer id, List<Response> responses) {
-        Optional<Question> optional = questionDao.findById(id);
-        if (optional.isPresent()) {
-            Question question = optional.get();
-            List<Question> questions = question.getQuestions();
-
-            if (!questions.isEmpty()) {
-                int right = 0;
-                int i = 0;
-                for (Response response : responses) {
-                    if (response.getCorrectAnswer().equals(questions.get(i).getAnswer())) {
-                        right++;
-                    }
-                    i++;
-                }
-                return new ResponseEntity<>(right, HttpStatus.OK);
-            } else {
-                // Handle the case when there are no questions
-                return new ResponseEntity<>(0, HttpStatus.OK);
-            }
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        try {
+            Question savedQuestion = questionRepository.save(question);
+            return new ResponseEntity<>("Created successfully", HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Failed to create question", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
 }
-

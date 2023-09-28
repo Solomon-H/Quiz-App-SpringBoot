@@ -1,12 +1,11 @@
 package com.demo.quizApp.model;
 
+import java.util.List;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 @Data
-@RequiredArgsConstructor
 public class Response {
-    private Integer id;
-    private String correctAnswer;
-
+    private Long questionId;
+    private String selectedAnswers;
+    
 }

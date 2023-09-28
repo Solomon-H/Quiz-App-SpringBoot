@@ -1,15 +1,11 @@
 package com.demo.quizApp.controller;
 
-
 import com.demo.quizApp.model.Question;
-import com.demo.quizApp.model.Response;
 import com.demo.quizApp.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestOperations;
-import org.springframework.web.client.RestTemplate;
-
 import java.util.List;
 
 @RestController
@@ -17,27 +13,38 @@ import java.util.List;
 public class QuestionController {
 
     @Autowired
-    QuestionService questionService;
+    private QuestionService questionService;
 
-    @GetMapping("/allQuestions")
+    @PostMapping("/add")
+    public ResponseEntity<Question> createQuestion(@RequestBody Question question) {
+        ResponseEntity<String> responseEntity = questionService.addQuestion(question);
+
+        if (responseEntity.getStatusCode() == HttpStatus.CREATED) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(question);
+        } else {
+            return ResponseEntity.status(responseEntity.getStatusCode()).body(null);
+        }
+    }
+
+    @GetMapping("/allQuestion")
     public ResponseEntity<List<Question>> getAllQuestions() {
-        return questionService.getAllQuestions();
+        ResponseEntity<List<Question>> responseEntity = questionService.getAllQuestions();
+        List<Question> questions = responseEntity.getBody();
+        return ResponseEntity.status(responseEntity.getStatusCode()).body(questions);
+}
+    
+
+    @GetMapping("/{quizId}")
+    public ResponseEntity<List<Question>> getQuestionsByQuiz(@PathVariable Long quizId) {
+        List<Question> questions = questionService.findByQuizId(quizId);
+        return new ResponseEntity<>(questions, HttpStatus.OK);
+    }
+    
+
+    @GetMapping("/category/{category}")
+    public ResponseEntity<List<Question>> getQuestionsByCategory(@PathVariable String category) {
+        ResponseEntity<List<Question>> responseEntity = questionService.getQuestionsByCategory(category);
+        return ResponseEntity.status(responseEntity.getStatusCode()).body(responseEntity.getBody());
     }
 
-    @PostMapping("/newQuestion")
-    public ResponseEntity<String> addQuestion(@RequestBody Question question) {
-        return questionService.addQuestion(question);
-    }
-
-//    @PostMapping("/totalAnswer/{id}")
-//    public ResponseEntity<Integer> getTotalAnswer(@PathVariable Integer id, @RequestBody List<Response> responses) {
-//        return questionService.calculateResult(id, responses);
-//    }
-
-    @GetMapping("/result/{id}")
-    public ResponseEntity<Integer> getTotalResult(@PathVariable Integer id, @RequestBody List<Response> responses) {
-        ResponseEntity<Integer> result = questionService.calculateResult(id, responses);
-
-        return result;
-    }
 }
