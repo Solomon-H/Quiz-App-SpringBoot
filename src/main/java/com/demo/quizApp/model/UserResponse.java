@@ -3,8 +3,7 @@ package com.demo.quizApp.model;
 import lombok.Data;
 
 @Data
-public class Response {
+public class UserResponse {
     private Long questionId;
-    private String selectedAnswers;
-    
+    private String response;
 }
