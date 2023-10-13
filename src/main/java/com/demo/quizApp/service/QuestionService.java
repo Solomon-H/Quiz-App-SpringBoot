@@ -27,6 +27,15 @@ public class QuestionService {
         }
     }
 
+    // public Optional<Question> findByQuestionId(Long id) {
+    //     try {
+    //         return questionRepository.findById(id);
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //         return Optional.empty();
+    //     }
+    // }
+
     public ResponseEntity<String> addQuestion(Question question) {
         try {
             questionRepository.save(question);

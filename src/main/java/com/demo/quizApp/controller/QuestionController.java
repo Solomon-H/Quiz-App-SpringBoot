@@ -30,7 +30,7 @@ public class QuestionController {
     //     return new ResponseEntity<Question>(question, HttpStatus.OK);
     // }
 
-
+    
     @PostMapping("/newQuestion")
     public ResponseEntity<Question> createQuestion(@RequestBody Question question) {
         ResponseEntity<String> responseEntity = questionService.addQuestion(question);
