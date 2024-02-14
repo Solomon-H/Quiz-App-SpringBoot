@@ -43,5 +43,4 @@ INSERT INTO question (question, choice1, choice2, choice3, answer, category) VAL
     ('Which athlete holds the world record for the men 100m sprint?', 'Usain Bolt', 'Carl Lewis', 'Asafa Powell', 'Usain Bolt', 'Athletics'),
     ('What is the longest distance for a women marathon in the Olympics?', '26.2 miles', '13.1 miles', '50 kilometers', '26.2 miles', 'Athletics'),
     ('In which event did Jesse Owens win four gold medals at the 1936 Olympics?', '100m sprint', 'Long jump', 'Shot put', 'Long jump', 'Athletics');
-
 COMMIT;
