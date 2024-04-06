@@ -1,5 +1,4 @@
 package com.demo.quizApp.controller;
-
 import com.demo.quizApp.model.Question;
 import com.demo.quizApp.model.Quiz;
 import com.demo.quizApp.model.UserResponse;
